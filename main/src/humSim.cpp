@@ -1,18 +1,18 @@
 
 #include "humSim.hpp"
+#include <cmath>
+#include <numbers>
 
-class humiditySimulation(){
-    private:
-        double initialConc;
-        double flowRate;
-        double timeSlice;
-        double volume;
-    public:
-        humiditySimulation(double initialConc, double flowRate, double timeSlice, double volume);
-        double get_humidity();
-        double changeConcentration;
+humSim::humSim(double flow, double vol, double initConc, double time):flowRate(flow), volume(vol), initialConc(initConc), timeslice(time) {
+    humidity = initConc*volume;
 }
-double get_humidity_simulation(){
 
-    
+double humSim::getHumidity(){
+    return humidity;
 }
+
+void humSim::update(double concentration){
+    iVconst = humidity + volume*timeslice; // not sure if this is correct
+    humidity = flowRate*concentration*timeslice - volume*timeslice + iVconst*pow(std::numbers::e, -1*flowRate*timeslice*concentration/volume);
+}
+

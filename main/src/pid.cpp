@@ -26,7 +26,7 @@ void runPos(void* param){
     while(1){
         // get input
         double inp = controller->input();
-        ESP_LOGI("dht", "humidity: %.2f, setpoint: %2.f", inp, controller->setpoint);
+        ESP_LOGI("hum", "humidity: %.2f, setpoint: %2.f", inp, controller->setpoint);
 
         // calculate error
         // controller->sampleFrame[controller->frameIdx] = inp;
@@ -34,7 +34,6 @@ void runPos(void* param){
         // controller->frameIdx = (controller->frameIdx + 1)%errorWindow;
         double error = inp - controller->setpoint;//controller->err(controller->sampleFrame, controller->frameSize, controller->setpoint);
 
-        ESP_LOGI("pid", "error: %.2f", error);
         // calculate pid
         double p = controller->propGain * error;
         controller->integral += error * controller->sampleRate;
@@ -47,10 +46,10 @@ void runPos(void* param){
         controller->prev_err = error;
 
         // output calculated pid value
-        ESP_LOGI("pid", "output: %.2f", pid);
+        ESP_LOGI("pid", "output: %.2f,", pid);
         controller->output(pid);
 
-        vTaskDelay(2000 / portTICK_PERIOD_MS); 
+        vTaskDelay(controller->sampleRate / portTICK_PERIOD_MS); 
     }
 }
 
